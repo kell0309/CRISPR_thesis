@@ -1,8 +1,7 @@
 # 01_load_data.R
 # Loading libraries
-library(tidyverse)
 library(data.table)
-
+library(tidyverse)
 # Ask user for folder path
 file_path <- readline(prompt = "Enter the full path to the file: ")
 
@@ -16,28 +15,23 @@ if (length(txt_files) == 0) {
 cat("Found", length(txt_files), "files:\n")
 print(basename(txt_files))
 
-# Read all files into a named list
-counts_list <- txt_files |>                                          
-  set_names(tools::file_path_sans_ext(basename(txt_files))) |>
-  map(~ read_tsv(.x, show_col_types = FALSE))
+# Get files without extensions
+file_names <- basename(txt_files)
+file_names <- gsub("\\.txt$","",file_names)
+counts_list <- lapply(txt_files, function(x) read_tsv(x, show_col_types = FALSE))
 
-# Add calculated mean of reps per sgRNA
-counts_list <- counts_list |>                                        
-  map(function(df) {
-    
-    # identify rep columns (e.g. C2BBE1_Rep1, Rep2, Rep3)
-    rep_cols <- df |>
-      select(contains("_Rep")) |>
-      colnames()
-    
-    # calculate mean across reps for each sgRNA row
-    df <- df |>                                                      
-      mutate(rep_mean_calculated = rowMeans(across(all_of(rep_cols)),
-                                            na.rm = TRUE))
-    return(df)
-  })
+# Name each element in the list by cell line
+names(counts_list) <- file_mames
+
+# identify rep columns for each file
+counts_list <- lapply(counts_list, function(df) {
+  
+  rep_cols <- colnames(select(df, contains("_Rep")))
+  
+  return(df)
+})
 
 # Sanity check
 cat("\nDone! Files loaded:", length(counts_list), "\n")
-cat("Example - first file rep mean (first 5 rows):\n")
-print(counts_list[[1]] |> select(sgRNA, gene, rep_mean_calculated) |> head(5))
+cat("first file rep mean (first 5 rows):\n")
+print(head(counts_list[[1]]))
