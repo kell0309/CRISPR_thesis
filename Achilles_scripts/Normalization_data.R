@@ -1,7 +1,11 @@
 # 02_normalisation.R
 library(tidyverse)
 library(edgeR)
-
+ """
+ 1.motivate why use TMM¨
+ 2. why we use CPM
+ 
+ """
 tmm_normalise <- function(df) {
   
   # step 1: find rep columns only (no plasmid, no mean)
@@ -22,7 +26,7 @@ tmm_normalise <- function(df) {
   
   # step 5: join back with gene and plasmid columns
   result <- merge(
-    select(df, sgRNA, gene, plasmid, rep_mean_calculated),
+    select(df, sgRNA, gene, plasmid,),
     norm_df,
     by = "sgRNA"
   )
