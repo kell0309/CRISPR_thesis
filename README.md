@@ -34,16 +34,16 @@ setwd("path/to/CRISPR_thesis")
 
 ### Step 3:  Run the scripts in order
 
-# Run script 1: loading
-source("scripts/01_load_data.R")
-# You will be prompted to enter the path to your data folder
-# Example: C:/Users/username/Documents/data/achilles
+#### Run script 1: loading
+("Achilles_scripts/01_load_data.R")
+ You will be prompted to enter the path to your data folder
+ Example: C:/Users/username/Documents/data/achilles
 
-# Run script 2:  normalisation
-source("scripts/02_normalization.R")
+#### Run script 2:  normalisation
+("Achilles_scripts/02_normalization.R")
 
-# Run script 3: statistical testing
-source("scripts/03_fold_change.R")
+#### Run script 3: statistical testing
+("Achilles_scripts/03_fold_change.R")
 
 ## Data format
 Each input file should be a tab separated .txt file.
