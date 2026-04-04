@@ -11,7 +11,7 @@ tmm_normalise <- function(df) {
   # step 1: find rep columns only (no plasmid, no mean)
   rep_cols <- colnames(select(df, contains("_Rep")))
   
-  # step 2: build count matrix (rows = sgRNAs, cols = replicates)
+  # step 2: build count matrix s(rows = sgRNAs, cols = replicates)
   count_matrix <- as.matrix(select(df, all_of(rep_cols)))
   rownames(count_matrix) <- df$sgRNA
   
