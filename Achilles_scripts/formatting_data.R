@@ -9,8 +9,14 @@ file_path_name <- "C:/Users/khali/Downloads/12280541/sample_info.csv"
 full_sample_info <- read_csv(file_path_name, show_col_types = FALSE)
 
 # extract relevant columns
-columns <- c("DepMap_ID", "sample_collection_site", "primary_or_metastasis",
-             "primary_disease", "Subtype", "sex", "age")
+columns <- c("DepMap_ID",
+             "sample_collection_site",
+             "primary_or_metastasis",
+             "primary_disease",
+             "Subtype", 
+             "sex",
+             "age")
+
 sample_info <- full_sample_info[, columns]
 
 # filter colon colorectal cell lines
@@ -65,6 +71,11 @@ colon_raw_counts <- as.data.frame(fread(file_path_raw, select = keep_cols))
 colnames(colon_raw_counts)[1] <- "Construct_Barcode"
 cat(sprintf("Raw counts loaded: %d sgRNAs x %d cols\n",
             nrow(colon_raw_counts), ncol(colon_raw_counts)))
+
+
+# remove batch4 pDNA columns - not used by any colorectal cell line
+colon_raw_counts <- colon_raw_counts[, !grepl("batch4", colnames(colon_raw_counts))]
+cat(sprintf("After batch4 removal: %d cols\n", ncol(colon_raw_counts)))
 
 # load guide map
 file_path_guide <- "C:/Users/khali/Downloads/12280541/Achilles_guide_map.csv"
@@ -123,3 +134,12 @@ cat(sprintf("Guides removed:        %d\n", before - after))
 cat(sprintf("Guides remaining:      %d\n", after))
 cat(sprintf("\nFinal master matrix: %d rows x %d cols\n",
             nrow(colon_raw_counts), ncol(colon_raw_counts)))
+
+
+# remove batch4 pDNA columns
+colon_raw_counts <- colon_raw_counts[, !grepl("batch4", colnames(colon_raw_counts))]
+cat(sprintf("After batch4 removal: %d cols\n", ncol(colon_raw_counts)))
+
+# save master matrix as RDS
+saveRDS(colon_raw_counts, "C:/Users/khali/CRISPR_thesis/colon_raw_counts.rds")
+cat("RDS saved!\n")
