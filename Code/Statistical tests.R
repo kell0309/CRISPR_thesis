@@ -1,5 +1,5 @@
-library(org.Hs.eg.db)
 library(edgeR)
+library(dplyr)
 
 #below I just made a single function to normalise by TMM all the data plas_def being the data set
 normalisation<- function(plas_def) {
@@ -49,25 +49,22 @@ norplres<-folds_data(norpl)
 #Extracting the number of cell lines where each sgRNA is less thatn one in expression as well
 #As a list of which cell lines they are in
 essential_genes<- function(masterframe, threshhold) {
-  #we are starting from after the third column as they are either non numeric
-  #or the control
-  colstart<- masterframe[, 3:ncol(masterframe)]
+  #we are stanrding after the 3rd and 4th columns to only take numberic values
+  masterframe <- masterframe[masterframe[, 3] >= 10, ]
+  colstart<- masterframe[, 4:ncol(masterframe)]
   #we turn rowSums into a true or false
-  rows_zero<- rowSums(colstart < 1, na.rm = TRUE)
+  Essential_Number <- rowSums(colstart < 1, na.rm = TRUE)
   #each of the cell lines that has a 0 count on the gene
-  rows_cols<- apply(colstart < 1, 1, function(row) names(which(row)))
-  #taking the first 3 columns from the master frame and funding the new columns
-  binding<- cbind(masterframe[, 1:3], rows_zero, rows_cols = I(rows_cols))
+  Essential_Names<- apply(colstart < 1, 1, function(row) names(which(row)))
+  #taking the first 3 columns from the master frame and binding the new columns
+  binding<- cbind(masterframe[, 1:3], Essential_Number, Essential_Names = I(Essential_Names))
   #we only care for keeping the genes with atleast a single cell line
-  binding[binding$rows_zero >= ncol(colstart) * threshhold,]
+  binding[binding$Essential_Number >= ncol(colstart) * threshhold, ]
 }
 # the two datasets of the essential genes holding the information 
-sample_essen<-essential_genes(non_CRISPR_C6596666.sample, 0)
+sample_essen<-essential_genes(non_CRISPR_C6596666.sample, 0.1)
 # the reasion for the threshhold being variable is to take into account
 # the difference not only in size but diversity as sample_essen is made up of
 # cell lines from the same origins
 plasmid_essen<-essential_genes(non_ERS717283.plasmid, 0.5)
 
-#cut_results<- results[results$logFC < 1, ]
-#cut_results <- results[abs(results$logFC) >= log2(2), ]
-#zwe<-unique(cut_results$gene)

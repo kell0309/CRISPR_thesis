@@ -7,7 +7,6 @@
 
 #These are libraries that are used the two with # are ones that were tested but not used
 library(dplyr)
-#library(tidyverse)
 
 #This is the path to the data on my computers
 #patr<-"/Users/user/Documents/CRISPR_thesis/gRNA Sanger"
@@ -77,7 +76,7 @@ call_merge<-function(time, patr) {
                         #close the function, return the variables
                       }, av_funct, names(av_funct)))
     # here the low already essential genes are removed if they already die in the control
-    var<-red_merge[red_merge$plasmid > 10, ] 
+    #var<-red_merge[red_merge$plasmid > 10, ] 
   })
 }
 
