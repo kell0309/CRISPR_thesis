@@ -2,3 +2,11 @@
 .Rhistory
 .RData
 .Ruserdata
+colon_raw_counts.rds
+results/*.rds
+Galaxy*.tabular
+common_essentials.csv
+edgeR_all_results.csv
+results/
+*.odt
+~
