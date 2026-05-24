@@ -3,7 +3,7 @@
 ## Overview
 Analysis of the DepMap 20Q2 Achilles genome wide CRISPR knockout screen to identify essential genes in colorectal carcinoma cell lines. The pipeline processes raw sgRNA count data from 9 colorectal cancer cell lines across 18 replicates, applying TMM normalisation, batch-specific LFC calculation and edgeR statistical testing to identify 33 common essential genes. MAGeCK MLE was additionally applied as a complementary analytical approach.
 
-Data was obtained from the Broad Institute Project Achilles (https://depmap.org/portal/).
+Data was obtained from the Broad Institute Project Achilles https://figshare.com/articles/dataset/DepMap_20Q2_Public/12280541
 
 ## Contents
 **Achilles_scripts/**
