@@ -4,7 +4,7 @@ library(stringr)
 
 # load master matrix
 colon_raw_counts <- readRDS("C:/Users/khali/CRISPR_thesis/colon_raw_counts.rds")
-cat(sprintf("Loaded: %d sgRNAs x %d cols\n", nrow(colon_raw_counts), ncol(colon_raw_counts)))
+dim(colon_raw_counts)
 
 # prepare MAGeCK counts matrix
 mageck_input <- colon_raw_counts %>%
@@ -14,7 +14,7 @@ mageck_input <- colon_raw_counts %>%
 # rename Construct_Barcode to sgRNA
 colnames(mageck_input)[1] <- "sgRNA"
 
-# clean gene column - remove entrez IDs e.g. BRAF (673) becomes BRAF
+# clean gene column 
 mageck_input$gene <- gsub(" \\(.*\\)", "", mageck_input$gene)
 
 # clean all column names - remove spaces and special characters
@@ -27,14 +27,14 @@ colnames(mageck_input) <- colnames(mageck_input) %>%
 colnames(mageck_input)[colnames(mageck_input) == "Avana_4_Hu_pDNA_MAA40_93015_02pguL_batch3"][2] <- "Avana_4_Hu_pDNA_MAA40_93015_02pguL_v2_batch3"
 
 # check final structure
-cat(sprintf("MAGeCK counts matrix: %d sgRNAs x %d cols\n", nrow(mageck_input), ncol(mageck_input)))
-print(colnames(mageck_input))
+dim(mageck_input)
+colnames(mageck_input)          
+head(mageck_input[, 1:5])
 
 # save counts matrix
 write.table(mageck_input,
             "C:/Users/khali/CRISPR_thesis/Achilles_scripts/mageck_counts.txt",
             sep = "\t", row.names = FALSE, quote = FALSE)
-cat("Counts matrix saved!\n")
 
 # build design matrix
 design_matrix <- data.frame(
@@ -80,10 +80,14 @@ design_matrix <- data.frame(
 
 # verify samples match between counts and design matrix
 matched <- intersect(colnames(mageck_input)[3:ncol(mageck_input)], design_matrix$Samples)
-cat(sprintf("Matched samples: %d / 26\n", length(matched)))
+length(matched)       
+
+
+# preview design matrix
+head(design_matrix)
+dim(design_matrix)
 
 # save design matrix
 write.table(design_matrix,
             "C:/Users/khali/CRISPR_thesis/mageck_design.txt",
             sep = "\t", row.names = FALSE, quote = FALSE)
-cat("Design matrix saved!\n")
