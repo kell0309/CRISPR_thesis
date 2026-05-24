@@ -1,55 +1,55 @@
-# CRISPR Screen Analysis Pipeline
+# Achilles CRISPR Screen Analysis
 
 ## Overview
-This pipeline analyses  CRISPR knockout screen data from the Achilles dataset.
-It performs data loading, TMM normalisation and statistical testing to identify
-essential genes across multiple cancer cell lines.
+Analysis of the DepMap 20Q2 Achilles genome wide CRISPR knockout screen to identify essential genes in colorectal carcinoma cell lines. The pipeline processes raw sgRNA count data from 9 colorectal cancer cell lines across 18 replicates, applying TMM normalisation, batch-specific LFC calculation and edgeR statistical testing to identify 33 common essential genes. MAGeCK MLE was additionally applied as a complementary analytical approach.
 
-## Pipeline steps
-- `01_load_data.R` — loads all cell line count files
-- `02_normalisation.R` — TMM normalisation via edgeR
-- `03_fold_change.R` — statistical testing via glmQLFTest / glmLRT
+Data was obtained from the Broad Institute Project Achilles (https://depmap.org/portal/).
+
+## Contents
+**Achilles_scripts/**
+- `formatting_data.R`; data loading, QC filtering and replicate metadata preparation
+- `Statistical_test_ver2.R`; TMM normalisation, LFC calculation and edgeR GLM statistical testing
+- `mageck_format.R`; count matrix and design matrix preparation for MAGeCK MLE
+- `plot.R` ;all visualisation plots including QC, volcano, heatmap, UMAP and Venn diagram
+
+**results/plots/**
+- All figures generated from the analysis pipeline
+
+**results/**
+- `mageck_counts.txt`; sgRNA count matrix formatted for MAGeCK MLE input
+- `mageck_design.txt`;design matrix encoding batch structure for MAGeCK MLE
+
+## How to Run
+Download DepMap 20Q2 from https://figshare.com/articles/dataset/DepMap_20Q2_Public/12280541 then run scripts in order:
+
+set the working directory;
+```r
+setwd("path/to/CRISPR_thesis")
+```
+and then the scripts
+
+```r
+source("Achilles_scripts/formatting_data.R")
+source("Achilles_scripts/Statistical_test_ver2.R")
+source("Achilles_scripts/mageck_format.R")
+source("Achilles_scripts/plot.R")
+```
 
 ## Requirements
+R 4.1.0 or higher with the following packages:
+`edgeR`, `ggplot2`, `ggrepel`, `pheatmap`, `umap`, `ggvenn`, `readr`, `dplyr`
 
-### R version
-R 4.1.0 or higher
 
-### Packages
-Install the following before running:
-
+```r
 install.packages("tidyverse")
 install.packages("BiocManager")
 BiocManager::install("edgeR")
-
-## How to run
-
-### Step 1: Clone the repository
-git clone https://github.com/kell0309/CRISPR_thesis.git
-cd CRISPR_thesis
-
-### Step 2: Open RStudio
-Open RStudio and set your working directory to the cloned folder:
-setwd("path/to/CRISPR_thesis")
-
-### Step 3:  Run the scripts in order
-
-#### Run script 1: loading
-("Achilles_scripts/01_load_data.R")
- You will be prompted to enter the path to your data folder
- Example: C:/Users/username/Documents/data/achilles
-
-#### Run script 2:  normalisation
-("Achilles_scripts/02_normalization.R")
-
-#### Run script 3: statistical testing
-("Achilles_scripts/03_fold_change.R")
-
-## Data format
-Each input file should be a tab separated .txt file.
-
-## Notes
-- Cell lines with a single replicate are analysed using a fixed biological
-  coefficient of variation of 0.4
-- All other cell lines use dispersion estimated directly from the replicates
-- FDR threshold of 0.05 is recommended for significant hits
+install.packages("ggplot2")
+install.packages("ggrepel")
+install.packages("pheatmap")
+install.packages("umap")
+install.packages("ggvenn")
+install.packages("readr")
+install.packages("dplyr")
+```
+MAGeCK MLE was run via Galaxy EU (https://usegalaxy.eu/) version 0.5.9.2.1
