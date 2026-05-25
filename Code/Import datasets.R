@@ -4,23 +4,29 @@
 # 2.Merge results that come from the same cell line
 # 3.Additional variable was found time, it took priority over cell lines
 # this part of the repository is made by Vasileios Theocharis
-
-#These are libraries that are used the two with # are ones that were tested but not used
+# Note this part of the pipeline is not required if the data is already in the
+# expected format
+# Single library to be used for additional assistance
+# some variables are only silenced, from older versions
+# where data that could not be properly processed was extracted.
 library(dplyr)
 
-#This is the path to the data on my computers
-#patr<-"/Users/user/Documents/CRISPR_thesis/gRNA Sanger"
-patr<-"/home/vasilis/SchoolFolder/bioinformatics/R scripts/CRISPR_thesis/gRNA Sanger"
+# This line will give you a prompt to add your file path to the files
+# For easier testing it was initially hardcoded as a string
+patr<- readline(prompt = "Enter filepath here: ")
 grr<-list.files(path=patr, full.names = TRUE)
 
-#here I extract the column names and add the names of the files back
+#here I extract the column names the files will be added back later
 #this is meant for the grouping
 sep_extract <- lapply(grr, function(f) {
+  #Defining features here we only extract the heads and and separated by a tab
   colnames(read.delim(f, nrows = 1, header = TRUE, sep = "\t"))
 })
-#separated on the 4th column meaning the sample
-#we are only extracting the column heads as this is about grouping said names
+
+#We add back the file names by referencing the filepaths
 names(sep_extract) <- basename(grr)
+
+#separated on the 4th column meaning the sample
 sep_final<- split(sep_extract, sapply(sep_extract, `[`, 4))
 #this part is the is now taking the heads from the extraction and matching them 
 #match them based on the R which is the runs and then based on the _ which connects the names
@@ -90,6 +96,7 @@ list2env(setNames(non_merge, paste0("non_", names(non_merge))), envir = .GlobalE
 #list2env(setNames(pos_merge, paste0("pos_", names(pos_merge))), envir = .GlobalEnv)
 
 
-
-
+rm(grouped_R_, non_merge, patr, grr, sep_extract, sep_final, time_non, call_merge)
+#note do not run the one below if you want to use the .sample data
+rm(non_CRISPR_C6596666.sample)
            
